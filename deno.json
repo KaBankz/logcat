@@ -2,6 +2,6 @@
   "tasks": {
     "dev": "deno run --allow-net=0.0.0.0 --allow-sys=networkInterfaces --watch main.ts",
     "start": "deno run --allow-net=0.0.0.0 --allow-sys=networkInterfaces main.ts",
-    "build": "deno compile --allow-net=0.0.0.0 --allow-sys=networkInterfaces main.ts"
+    "build": "deno compile --allow-net=0.0.0.0 --allow-sys=networkInterfaces --output logcat main.ts"
   }
 }
