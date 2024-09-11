@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: ['master']
+
+concurrency:
+  group: ${{ github.ref }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Lint
+        run: deno lint
+
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Format
+        run: deno fmt --check
+
+  typecheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Typecheck
+        run: deno check .
