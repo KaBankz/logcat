@@ -36,6 +36,7 @@ jobs:
           deno-version: v1.x
 
       - name: Build Binary
+        shell: bash
         run: |
           deno compile \
           --allow-net=0.0.0.0 \
@@ -45,6 +46,7 @@ jobs:
           main.ts
 
       - name: Compress Binary
+        shell: bash
         run: tar -czvf logcat-${{ matrix.target }}.tar.gz logcat
 
       - name: Upload Binary
