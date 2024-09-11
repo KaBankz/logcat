@@ -42,16 +42,47 @@ jobs:
           --allow-net=0.0.0.0 \
           --allow-sys=networkInterfaces \
           --target ${{ matrix.target }} \
-          --output logcat \
+          --output dist/logcat \
           main.ts
 
       - name: Compress Binary
         shell: bash
-        run: tar -czvf logcat-${{ matrix.target }}.tar.gz logcat
+        run: |
+          tar czvf \
+          dist/logcat-${{ matrix.target }}.tar.gz \
+          -C dist \
+          logcat
 
       - name: Upload Binary
         if: success()
         uses: actions/upload-artifact@v4
         with:
+          compression-level: 0
           name: logcat-${{ matrix.target }}.tar.gz
-          path: logcat-${{ matrix.target }}.tar.gz
+          path: dist/logcat-${{ matrix.target }}.tar.gz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      discussions: write
+
+    steps:
+      - name: Download All Binaries
+        uses: actions/download-artifact@v4
+        with:
+          pattern: logcat-*.tar.gz
+          path: dist
+
+      - name: Create Release and Upload Binaries
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.event.ref, 'refs/tags/v')
+        with:
+          fail_on_unmatched_files: true
+          # download-artifact will download the files in a dir with the same as
+          # the artifact name, so we need to look for the files in the first
+          # subdirectory of dist. This gave me a headache trying to figure out.
+          files: dist/*/logcat-*.tar.gz
+          generate_release_notes: true
