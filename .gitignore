@@ -3,4 +3,4 @@
 .DS_Store?
 
 # Compiled binary files
-logcat
+dist/
